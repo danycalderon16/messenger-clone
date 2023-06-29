@@ -1,8 +1,9 @@
 import Image from "next/image";
+import AuthForm from "./components/AuthForm";
 
 const Auth = () => {
   return (
-    <div 
+    <div
       className="
         flex 
         min-h-full 
@@ -22,8 +23,19 @@ const Auth = () => {
           src="/images/logo.png"
           alt="Logo"
         />
+        <h2
+          className="
+            mt-6
+            text-center
+            text-3xl
+            font-bold
+            tracking-tight
+            text-gray-900">
+          Sign in to your account
+        </h2>
       </div>
-  </div>
+      <AuthForm/>
+    </div>
   )
 }
 
