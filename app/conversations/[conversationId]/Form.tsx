@@ -3,26 +3,26 @@ import useConversation from '@/app/hooks/useConversation'
 import axios from 'axios';
 import React from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import { HiPhoto,HiPaperAirplane} from 'react-icons/hi2';
+import { HiPhoto, HiPaperAirplane } from 'react-icons/hi2';
 import MessageInput from './MessageInput';
-
+import { CldUploadButton } from 'next-cloudinary'
 const Form = () => {
   const { conversationId } = useConversation();
-  const { 
+  const {
     register,
     handleSubmit,
     setValue,
-    formState:{
+    formState: {
       errors
     }
   } = useForm<FieldValues>({
-    defaultValues:{
-      message:''
+    defaultValues: {
+      message: ''
     }
   })
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    setValue("message", "", {shouldValidate:true});
+    setValue("message", "", { shouldValidate: true });
 
     axios.post("/api/messages", {
       ...data,
@@ -30,6 +30,12 @@ const Form = () => {
     });
   };
 
+  const handleUpload = (result: any) => {
+    axios.post("/api/messages", {
+      image: result?.info?.secure_url,
+      conversationId
+    });
+  }
   return (
     <div className="
       px-4
@@ -42,7 +48,13 @@ const Form = () => {
       lg:gap-4
       w-full
     ">
-      <HiPhoto size={30} className='text-sky-500'/>
+      <CldUploadButton
+        options={{ maxFiles: 1 }}
+        onUpload={handleUpload}
+        uploadPreset='smb0va2s'
+      >
+        <HiPhoto size={30} className='text-sky-500' />
+      </CldUploadButton>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className='flex items-center gap-2 lg:gap-4 w-full'
@@ -55,7 +67,7 @@ const Form = () => {
           placeholder="Write a message"
         />
         <button type="submit"
-        className="
+          className="
           rounded-full
           p-2
           bg-sky-500
@@ -63,7 +75,7 @@ const Form = () => {
           hover:bg-sky-600
           transition
         ">
-          <HiPaperAirplane 
+          <HiPaperAirplane
             size={18}
             className='text-white'
           />
