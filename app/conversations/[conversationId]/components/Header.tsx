@@ -7,6 +7,7 @@ import { Conversation, User } from '@prisma/client'
 import useOtherUser from '@/app/hooks/useOtherUser'
 import Avatar from '@/app/components/Avatar'
 import ProfileDrawer from './ProfileDrawer'
+import AvatarGroup from '@/app/components/AvatarGroup'
 
 interface HeaderProps {
   conversation: Conversation & {
@@ -15,7 +16,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ conversation }) => {
-  
+
   const otherUser = useOtherUser(conversation);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -29,11 +30,11 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
 
   return (
     <>
-    <ProfileDrawer
-      data={conversation}
-      isOpen={drawerOpen}
-      onClose={()=>setDrawerOpen(false)}
-    />
+      <ProfileDrawer
+        data={conversation}
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      />
       <div className='
         bg-white
         w-full
@@ -48,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
         shadow-sm
       '>
         <div className="flex gap-3 items-center">
-          <Link 
+          <Link
             className="
               lg:hidden
               block
@@ -56,9 +57,14 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
               hover:text-sky-600
               "
             href="/conversations">
-              <HiChevronLeft size={32}/>
+            <HiChevronLeft size={32} />
           </Link>
-          <Avatar user={otherUser}/>
+          {conversation.isGroup ? (
+            <AvatarGroup users={conversation.users} />
+          ) :
+            (
+              <Avatar user={otherUser} />
+            )}
           <div className="flex flex-col">
             <div>
               {conversation.name || otherUser.name}
@@ -72,9 +78,9 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
             </div>
           </div>
         </div>
-        <HiEllipsisHorizontal 
+        <HiEllipsisHorizontal
           size={32}
-          onClick={()=>setDrawerOpen(true)}
+          onClick={() => setDrawerOpen(true)}
           className="
             text-sky-500
             cursor-pointer
